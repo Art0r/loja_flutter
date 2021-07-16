@@ -22,14 +22,34 @@ class UserModel extends Model {
   }
 
 
-  void signIn() async {
+  @override
+  void addListener(VoidCallback listener) {
+    super.addListener(listener);
+
+    _loadCurrentUser();
+
+  }
+
+  void signIn({required String email, required String pass,
+    required VoidCallback onSuccess, required VoidCallback onFail}) async {
+
     this.isLoading = true;
     notifyListeners();
-    
-    await Future.delayed(Duration(seconds: 3));
 
-    this.isLoading = false;
-    notifyListeners();
+    FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email, password: pass).then((user) async {
+      FirebaseAuth.instance.currentUser;
+
+      await _loadCurrentUser();
+
+      onSuccess();
+      _isLoading = false;
+      notifyListeners();
+    }).catchError((onError) {
+      onFail();
+      _isLoading = false;
+      notifyListeners();
+    });
   }
 
   void signUp({required Map<String, dynamic> userData, required String pass,
@@ -37,7 +57,6 @@ class UserModel extends Model {
 
     FirebaseAuth _auth = FirebaseAuth.instance;
     this.isLoading = true;
-    notifyListeners();
 
     _auth.createUserWithEmailAndPassword(
         email: userData['email'],
@@ -58,10 +77,22 @@ class UserModel extends Model {
 
   }
 
-  bool isLoggedIn() {
-    return false;
+  void initDB() async {
+    await Firebase.initializeApp();
   }
 
+  bool isLoggedIn() {
+    initDB();
+    return FirebaseAuth.instance.currentUser != null;
+  }
+
+  void signOut() async {
+    await Firebase.initializeApp();
+    await FirebaseAuth.instance.signOut();
+
+    userData = Map();
+    notifyListeners();
+  }
   Future<Null> _saveUserData(Map<String, dynamic> userData) async {
     this.userData = userData;
     await Firebase.initializeApp();
@@ -69,5 +100,20 @@ class UserModel extends Model {
         .collection("users").doc(FirebaseAuth
         .instance.tenantId)
         .set(this.userData);
+  }
+
+  Future<Null> _loadCurrentUser() async {
+    await Firebase.initializeApp();
+
+    QuerySnapshot docUser =
+        await FirebaseFirestore.instance.collection('users')
+            .where("email", isEqualTo: FirebaseAuth.instance.currentUser!.email)
+            .get();
+
+    userData["name"] = docUser.docs.first.get("name");
+    userData["email"] = docUser.docs.first.get("email");
+    userData["address"] = docUser.docs.first.get("address");
+    
+    notifyListeners();
   }
 }

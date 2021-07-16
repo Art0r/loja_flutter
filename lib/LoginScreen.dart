@@ -5,11 +5,16 @@ import 'SignupScreen.dart';
 
 class LoginScreen extends StatelessWidget {
 
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passController = TextEditingController();
+
   final _formKey =  GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Login"),
         centerTitle: true,
@@ -39,6 +44,7 @@ class LoginScreen extends StatelessWidget {
               padding: EdgeInsets.all(16.0),
               children: <Widget>[
                 TextFormField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                     hintText: "E-mail",
                   ),
@@ -49,6 +55,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0,),
                 TextFormField(
+                  controller: _passController,
                   decoration: InputDecoration(
                     hintText: "Password",
                   ),
@@ -82,7 +89,12 @@ class LoginScreen extends StatelessWidget {
                         if (_formKey.currentState!.validate()){
 
                         }
-                        model.signIn();
+                        model.signIn(
+                          email: _emailController.text,
+                          pass: _passController.text,
+                          onSuccess: _onSuccess,
+                          onFail: _onFail
+                        );
                       },
                       child: Text(
                         "Entrar",
@@ -99,6 +111,20 @@ class LoginScreen extends StatelessWidget {
           );
         },
       )
+    );
+  }
+
+  void _onSuccess(){
+    BuildContext context = _scaffoldKey.currentState!.context;
+    Navigator.of(context).pop();
+  }
+
+  void _onFail(){
+    _scaffoldKey.currentState!.showSnackBar(
+        SnackBar(content: Text("Usuário ou senha incorretos"),
+          backgroundColor: Colors.redAccent,
+          duration: Duration(seconds: 2),
+        )
     );
   }
 }
