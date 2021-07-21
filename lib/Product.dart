@@ -15,6 +15,16 @@ class Product {
     price = snapshot.get("price") + 0.0;
   }
 
+  Product.withoutData();
+
+  Map<String, dynamic> toResumeProduct() {
+   return {
+      "title": this.title,
+      "description": this.description,
+      "price": this.price
+    };
+  }
+
   Product(String id, String title, String description, String category, List<String> images, List<String> sizes, double price) {
     this.id = id;
     this.title = title;

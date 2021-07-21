@@ -3,11 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 
 class UserModel extends Model {
 
   Map<String, dynamic> _userData = Map();
   bool _isLoading = false;
+
+  static UserModel of(BuildContext context) =>
+    ScopedModel.of<UserModel>(context);
 
   bool get isLoading => _isLoading;
 
@@ -73,12 +77,16 @@ class UserModel extends Model {
     });
   }
 
-  void recoveryPass() {
+  void recoveryPass(String email) async {
+    await Firebase.initializeApp();
 
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    _auth.sendPasswordResetEmail(email: email);
   }
 
   void initDB() async {
     await Firebase.initializeApp();
+
   }
 
   bool isLoggedIn() {
