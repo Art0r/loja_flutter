@@ -29,8 +29,10 @@ class _ProductScreenState extends State<ProductScreen> {
 
 
     final Color primaryColor = Theme.of(context).primaryColor;
+    final _scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(this.product.title),
         centerTitle: true,
@@ -130,6 +132,14 @@ class _ProductScreenState extends State<ProductScreen> {
                              cartProduct.category = product.category;
 
                             CartModel.of(context).addItemOnCart(cartProduct);
+
+                            _scaffoldKey.currentState!.showSnackBar(
+                              SnackBar(
+                                  content: Text("Produto adicionado ao carrinho!"),
+                                backgroundColor: Theme.of(context).primaryColor,
+                                duration: Duration(seconds: 1),
+                              )
+                            );
                           } else {
                             Navigator.of(context).push(
                               MaterialPageRoute(

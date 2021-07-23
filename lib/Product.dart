@@ -15,7 +15,7 @@ class Product {
     price = snapshot.get("price") + 0.0;
   }
 
-  Product.withoutData();
+  Product.withoutPreviousData();
 
   Map<String, dynamic> toResumeProduct() {
    return {
@@ -85,6 +85,15 @@ class Product {
 
   set id(String value) {
     _id = value;
+  }
+
+  Map<String, dynamic> returnMapData(){
+    return {
+      "title": title,
+      "price": price,
+      "category": category,
+      "images": images
+    };
   }
 
 

@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 
 class CartModel extends Model {
   UserModel userModel;
-
   List<CartProduct> products = [];
+  bool isLoading = false;
 
   CartModel(this.userModel);
 
@@ -21,7 +21,7 @@ class CartModel extends Model {
 
     await Firebase.initializeApp();
     FirebaseAuth auth =  FirebaseAuth.instance;
-    FirebaseFirestore.instance.collection("users")
+    FirebaseFirestore.instance.collection("orders")
         .doc(auth.currentUser!.uid)
         .collection("cart").add(cartProduct.toMap()).then(
             (doc) {
@@ -33,7 +33,7 @@ class CartModel extends Model {
   void removeItemOnCart(CartProduct cartProduct) async {
     await Firebase.initializeApp();
     FirebaseAuth auth =  FirebaseAuth.instance;
-    FirebaseFirestore.instance.collection("users")
+    FirebaseFirestore.instance.collection("orders")
         .doc(auth.currentUser!.uid)
         .collection("cart")
         .doc(cartProduct.cid)

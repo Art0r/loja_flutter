@@ -4,8 +4,7 @@ import 'package:loja_virtual/Product.dart';
 class CartProduct {
   String cid = "", category = "", pid = "", size = "";
   int quantity = 0;
-  
-  Product _product = Product.withoutData();
+  Product product = Product.withoutPreviousData();
 
   CartProduct();
 
