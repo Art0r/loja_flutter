@@ -4,6 +4,8 @@ import 'package:loja_virtual/CartProduct.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:loja_virtual/Product.dart';
 
+import 'CartModel.dart';
+
 class CartTile extends StatelessWidget {
 
   final CartProduct cartProduct;
@@ -25,6 +27,7 @@ class CartTile extends StatelessWidget {
   Widget build(BuildContext context) {
 
     Widget _buildContent(){
+      CartModel.of(context).updatePrices();
       return Row(
         children: <Widget>[
           Container(
@@ -66,7 +69,7 @@ class CartTile extends StatelessWidget {
                     children: <Widget>[
                       IconButton(
                           onPressed: cartProduct.quantity > 1 ? () {
-
+                            CartModel.of(context).decProduct(cartProduct);
                           } : null,
                         color: Theme.of(context).primaryColor,
                           icon: Icon(Icons.remove),
@@ -74,13 +77,15 @@ class CartTile extends StatelessWidget {
                       Text(cartProduct.quantity.toString()),
                       IconButton(
                         onPressed: () {
-
+                          CartModel.of(context).incProduct(cartProduct);
                         },
                         color: Theme.of(context).primaryColor,
                         icon: Icon(Icons.add),
                       ),
                       ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            CartModel.of(context).removeItemOnCart(cartProduct);
+                          },
                           child: Text("Remover"),
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
