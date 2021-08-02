@@ -8,7 +8,6 @@ class CartPrice extends StatelessWidget {
 
   CartPrice(this.buy);
 
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -77,7 +76,7 @@ class CartPrice extends StatelessWidget {
                 ),
                 SizedBox(height: 12.0,),
                 ElevatedButton(
-                  onPressed: (){},
+                  onPressed: buy,
                   child: Text("Finalizar Pedido"),
                   style: ButtonStyle(
                       textStyle: MaterialStateProperty.all(
